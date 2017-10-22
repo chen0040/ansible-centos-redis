@@ -31,9 +31,5 @@ Vagrant.configure("2") do |config|
 	config.vm.provision "shell", inline: "sudo yum install gcc-c++ patch readline readline-devel zlib zlib-devel -y"
 	config.vm.provision "shell", inline: "sudo yum install libyaml-devel libffi-devel openssl-devel make -y"
 	config.vm.provision "shell", inline: "sudo yum install bzip2 autoconf automake libtool bison iconv-devel sqlite-devel dos2unix -y"
-	
-	config.vm.provision "shell", inline: "dos2unix /home/vagrant/devops/make_redis.sh"
-	config.vm.provision "shell", inline: "sudo chmod +x /home/vagrant/devops/make_redis.sh"
-	config.vm.provision "shell", inline: "/home/vagrant/devops/make_redis.sh"
-	
+		
 end

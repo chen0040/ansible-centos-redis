@@ -12,7 +12,7 @@ git clone this project to your host computer and navigate to the root directory 
 ./env_setup.sh
 ```
 
-This will install ruby, gem, java, ansible, and redis client 
+This will install java, ansible, and make tools. 
 
 ## For Windows Users
 
@@ -22,24 +22,47 @@ git clone this project to your host computer and navigate to the root directory 
 vagrant up
 ```
 
-This will start a vagrant centos 7 VM (at ip 192.168.10.12) with ruby, gem, java, ansible, and redis client pre-installed. Run the following command to ssh into the centos VM:
+This will start a vagrant centos 7 VM (at ip 192.168.10.12) with java, ansible, and make tools. Run the following command to ssh into the centos VM:
 
 ```bash
 vagrant ssh
 ```
 
-Once in the VM, you will have the /home/vagrant/devops foler available as the shared folder. cd into the /home/vagrant/devops.
-
-From /home/vagrant/devops, run the following command to build the redis server:
-
-```bash
-
-```
-
 # Install redis
 
-On the centos OS, cd to the devops folder (that is the "devops" folder in this project), and run the following command:
+On the centOS, cd to the devops/ansible folder (that is the "devops/ansible" folder in this project), and run the following command:
 
+```bash
 ansible-playbook setup-redis.yml -u root -i inventory.password --tags=install_redis
+```
 
-https://www.linode.com/docs/databases/redis/install-and-configure-redis-on-centos-7
+This will build and install a redis-6379.service on the CentOS. Run the following command to check this service after the installation:
+
+```bash
+systemctl status redis-6379.service
+```
+
+# Start redis
+
+After the service is installed, one can start the redis service by running the following command:
+
+```
+sudo systemctl start redis-6379.service
+```
+
+This will start the redis service at port 6379.
+
+To test this service, run the following command:
+
+```
+redis-cli -a chen0469 ping
+```
+
+Here "chen0469" is the authentication password set in devops/ansible/inventory.password 
+
+The redis service can also be started by running the following commands:
+
+```bash
+cd devops/ansible
+ansible-playbook setup-redis.yml -u root -i inventory.password --tags=start_redis
+```

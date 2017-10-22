@@ -1,0 +1,121 @@
+---
+- hosts: redis_nodes
+  connection: local 
+  vars:
+    redis_pid_filepath: /var/run/redis
+    redis_loglevel: notice
+    redis_logfile_path: /var/log/redis/redis
+    redis_working_dir: /var/redis/data
+  remote_user: clef
+  tags:
+    - install_redis
+  pre_tasks:
+  - name: disable fingerprint checking that may be enabled; when enabled, causes ssh issues
+    command: authconfig --disablefingerprint --update
+    become: true
+  tasks:
+  - name: Create install redis directory if not exists
+    file: path={{ app_remote_base_dir }}/redis state=directory
+  - name: Create install redis bin directory if not exists
+    file: path={{ app_remote_base_dir }}/redis/bin state=directory
+  - stat: path={{ app_remote_base_dir }}/redis/redis-stable
+    register: redis_dir_status
+  - name: Uncompress the tar.gz to remote
+    unarchive: src={{ app_assets_dir }}/redis-stable.tar.gz dest={{ app_remote_base_dir }}/redis
+    when: redis_dir_status.stat.exists == False
+  - name: Build the redis deps
+    shell: make hiredis lua jemalloc linenoise
+    become: true
+    args:
+        chdir: "{{ app_remote_base_dir }}/redis/redis-stable/deps/"
+  - name: Build the redis
+    shell: make
+    become: true
+    args:
+        chdir: "{{ app_remote_base_dir }}/redis/redis-stable/"
+  - name: Copy the redis-server
+    shell: "cp {{ app_remote_base_dir }}/redis/redis-stable/src/redis-server /usr/local/bin"
+    become: true
+  - name: Copy the redis-cli
+    shell: "cp {{ app_remote_base_dir }}/redis/redis-stable/src/redis-cli /usr/local/bin"
+    become: true
+  - name: Create /etc/redis
+    file: path=/etc/redis state=directory owner=clef group=clef mode=0755
+    become: true
+  - name: Create /var/redis
+    file: path=/var/redis state=directory owner=clef group=clef mode=0755 recurse=yes
+    become: true
+  - name: Create /var/log/redis
+    file: path=/var/log/redis state=directory owner=clef group=clef mode=0755 recurse=yes
+    become: true
+  - name: Create working directory
+    file: path={{ redis_working_dir }} state=directory owner=clef group=clef mode=0755 recurse=yes
+    become: true
+  - name: Create {{ app_remote_base_dir }}/start_cluster.sh
+    template: src={{ app_templates_dir }}/redis/redis-trib.rb.j2 dest={{ app_remote_base_dir }}/redis/redis-trib.rb mode=0770 owner=clef group=clef
+  - name: Create /etc/redis/redis.conf
+    template: src={{ app_templates_dir }}/redis/redis-{{item}}.conf.j2 dest=/etc/redis/redis-{{item}}.conf mode=0644 owner=clef group=clef
+    become: true
+    with_items: "{{ redis_ports }}"
+  - name: Install redis.service
+    template: src={{ app_templates_dir }}/redis/redis-{{item}}.service.j2 dest=/etc/systemd/system/redis-{{item}}.service owner=clef group=clef mode=0755
+    become: true
+    with_items: "{{ redis_ports }}"
+  - name: reload daemon service for the redis services
+    shell: "systemctl daemon-reload"
+    become: true
+  - name: Reload redis service
+    service: name=redis-{{item}} enabled=true
+    become: true
+    with_items: "{{ redis_ports }}"
+
+- hosts: redis_nodes
+  tags:
+    - start_redis
+  tasks:
+  - name: Enable and start redis service
+    service: name=redis-{{item}} enabled=true state=started
+    become: true
+    with_items: "{{ redis_ports }}"
+
+- hosts: redis_nodes
+  tags:
+    - reload_redis
+  tasks:
+  - name: Enable and start redis service
+    service: name=redis-{{item}} enabled=true state=reloaded
+    become: true
+    with_items: "{{ redis_ports }}"
+
+- hosts: redis_nodes
+  tags:
+    - restart_redis
+  tasks:
+  - name: Enable and start redis service
+    service: name=redis-{{item}} enabled=true state=restarted
+    become: true
+    with_items: "{{ redis_ports }}"
+
+- hosts: redis_nodes
+  tags:
+    - stop_redis
+  tasks:
+  - name: Stop redis service
+    service: name=redis-{{item}} enabled=true state=stopped
+    ignore_errors: yes
+    become: true
+    with_items: "{{ redis_ports }}"
+
+- hosts: redis_nodes
+  tags:
+    - clean_redis
+  tasks:
+  - name: Remove dump.rdb
+    file: path=/var/redis/data/dump.rdb state=absent
+  - name: Remove nodes.conf
+    file: path=/var/redis/data/nodes-{{item}}.conf state=absent
+    with_items: "{{ redis_ports }}"
+  - name: Remove appendonly.aof
+    file: path=/var/redis/data/appendonly.aof state=absent
+
+

@@ -11,5 +11,5 @@ app_root_dir=../../..
 app_bin_dir=../bin
 app_assets_dir=../assets
 app_templates_dir=../templates
-app_remote_base_dir=/home/clef
+app_remote_base_dir=/home/vagrant
 

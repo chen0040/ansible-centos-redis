@@ -2,7 +2,7 @@
 require 'yaml'
 vagrantConfig = YAML.load_file 'Vagrantfile.config.yml'
 Vagrant.configure("2") do |config|
-    config.vm.box = "bento/centos-7.2"
+    config.vm.box = "bento/centos-7.4"
 
     config.vm.define "redis" do |redis|
         redis.vm.network "private_network", ip: vagrantConfig['ip']
@@ -30,18 +30,10 @@ Vagrant.configure("2") do |config|
 	# Install build tools for redis  
 	config.vm.provision "shell", inline: "sudo yum install gcc-c++ patch readline readline-devel zlib zlib-devel -y"
 	config.vm.provision "shell", inline: "sudo yum install libyaml-devel libffi-devel openssl-devel make -y"
-	config.vm.provision "shell", inline: "sudo yum install bzip2 autoconf automake libtool bison iconv-devel sqlite-devel -y"
+	config.vm.provision "shell", inline: "sudo yum install bzip2 autoconf automake libtool bison iconv-devel sqlite-devel dos2unix -y"
 	
-	# Install ruby 2.2.4
-	config.vm.provision "shell", inline: "curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
-	config.vm.provision "shell", inline: "curl -L get.rvm.io | sudo bash -s stable"
-	config.vm.provision "shell", inline: "source /home/vagrant/.bash_profile"
-	config.vm.provision "shell", inline: "source /etc/profile.d/rvm.sh"
-	config.vm.provision "shell", inline: "/usr/local/rvm/bin/rvm reload"
-	config.vm.provision "shell", inline: "/usr/local/rvm/bin/rvm requirements run"
-	config.vm.provision "shell", inline: "/usr/local/rvm/bin/rvm install 2.4.1"
+	config.vm.provision "shell", inline: "dos2unix /home/vagrant/devops/make_redis.sh"
+	config.vm.provision "shell", inline: "sudo chmod +x /home/vagrant/devops/make_redis.sh"
+	config.vm.provision "shell", inline: "/home/vagrant/devops/make_redis.sh"
 	
-	# Install gem and redis client
-	config.vm.provision "shell", inline: "sudo yum install gem -y"
-	config.vm.provision "shell", inline: "gem install redis"
 end

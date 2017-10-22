@@ -1,6 +1,5 @@
 ---
 - hosts: redis_nodes
-  connection: local 
   vars:
     redis_pid_filepath: /var/run/redis
     redis_loglevel: notice

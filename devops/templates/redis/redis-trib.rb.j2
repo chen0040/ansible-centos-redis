@@ -71,7 +71,7 @@ class ClusterNode
         @info[:migrating] = {}
         @info[:importing] = {}
         @info[:replicate] = false
-        @info[:password] = "{{clef_redis_pass}}"
+        @info[:password] = "{{app_redis_pass}}"
         @dirty = false # True if we need to flush slots info into node.
         @friends = []
     end
@@ -98,7 +98,7 @@ class ClusterNode
         STDOUT.flush
         begin
             @r = Redis.new(:host => @info[:host], :port => @info[:port], :timeout => 60)
-            {{clef_redis_pass_commented}}@r = Redis.new(:host => @info[:host], :port => @info[:port], :timeout => 60, :password=>@info[:password])
+            {{app_redis_pass_commented}}@r = Redis.new(:host => @info[:host], :port => @info[:port], :timeout => 60, :password=>@info[:password])
             @r.ping
         rescue
             xputs "[ERR] Sorry, can't connect to node #{self}"

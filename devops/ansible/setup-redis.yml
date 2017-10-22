@@ -39,25 +39,25 @@
     shell: "cp {{ app_remote_base_dir }}/redis/redis-stable/src/redis-cli /usr/local/bin"
     become: true
   - name: Create /etc/redis
-    file: path=/etc/redis state=directory owner=clef group=clef mode=0755
+    file: path=/etc/redis state=directory owner={{ app_user }} group={{ app_group }} mode=0755
     become: true
   - name: Create /var/redis
-    file: path=/var/redis state=directory owner=clef group=clef mode=0755 recurse=yes
+    file: path=/var/redis state=directory owner={{ app_user }} group={{ app_group }} mode=0755 recurse=yes
     become: true
   - name: Create /var/log/redis
-    file: path=/var/log/redis state=directory owner=clef group=clef mode=0755 recurse=yes
+    file: path=/var/log/redis state=directory owner={{ app_user }} group={{ app_group }} mode=0755 recurse=yes
     become: true
   - name: Create working directory
-    file: path={{ redis_working_dir }} state=directory owner=clef group=clef mode=0755 recurse=yes
+    file: path={{ redis_working_dir }} state=directory owner={{ app_user }} group={{ app_group }} mode=0755 recurse=yes
     become: true
   - name: Create {{ app_remote_base_dir }}/start_cluster.sh
-    template: src={{ app_templates_dir }}/redis/redis-trib.rb.j2 dest={{ app_remote_base_dir }}/redis/redis-trib.rb mode=0770 owner=clef group=clef
+    template: src={{ app_templates_dir }}/redis/redis-trib.rb.j2 dest={{ app_remote_base_dir }}/redis/redis-trib.rb mode=0770 owner={{ app_user }} group={{ app_group }}
   - name: Create /etc/redis/redis.conf
-    template: src={{ app_templates_dir }}/redis/redis-{{item}}.conf.j2 dest=/etc/redis/redis-{{item}}.conf mode=0644 owner=clef group=clef
+    template: src={{ app_templates_dir }}/redis/redis-{{item}}.conf.j2 dest=/etc/redis/redis-{{item}}.conf mode=0644 owner={{ app_user }} group={{ app_group }}
     become: true
     with_items: "{{ redis_ports }}"
   - name: Install redis.service
-    template: src={{ app_templates_dir }}/redis/redis-{{item}}.service.j2 dest=/etc/systemd/system/redis-{{item}}.service owner=clef group=clef mode=0755
+    template: src={{ app_templates_dir }}/redis/redis-{{item}}.service.j2 dest=/etc/systemd/system/redis-{{item}}.service owner={{ app_user }} group={{ app_group }} mode=0755
     become: true
     with_items: "{{ redis_ports }}"
   - name: reload daemon service for the redis services

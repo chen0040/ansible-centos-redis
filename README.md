@@ -40,6 +40,6 @@ From /home/vagrant/devops, run the following command to build the redis server:
 
 On the centos OS, cd to the devops folder (that is the "devops" folder in this project), and run the following command:
 
-ansible-playbook setup-redis.yml -u root -i inventory --tags=install_redis
+ansible-playbook setup-redis.yml -u root -i inventory.password --tags=install_redis
 
 https://www.linode.com/docs/databases/redis/install-and-configure-redis-on-centos-7

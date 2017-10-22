@@ -6,7 +6,6 @@
     redis_loglevel: notice
     redis_logfile_path: /var/log/redis/redis
     redis_working_dir: /var/redis/data
-  remote_user: clef
   tags:
     - install_redis
   pre_tasks:

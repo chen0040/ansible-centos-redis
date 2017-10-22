@@ -37,10 +37,9 @@ Vagrant.configure("2") do |config|
 	config.vm.provision "shell", inline: "curl -L get.rvm.io | sudo bash -s stable"
 	config.vm.provision "shell", inline: "source /home/vagrant/.bash_profile"
 	config.vm.provision "shell", inline: "source /etc/profile.d/rvm.sh"
-	config.vm.provision "shell", inline: "rvm reload"
-	config.vm.provision "shell", inline: "rvm requirements run"
-	config.vm.provision "shell", inline: "rvm user all"
-	config.vm.provision "shell", inline: "rvm install 2.4.1"
+	config.vm.provision "shell", inline: "/usr/local/rvm/bin/rvm reload"
+	config.vm.provision "shell", inline: "/usr/local/rvm/bin/rvm requirements run"
+	config.vm.provision "shell", inline: "/usr/local/rvm/bin/rvm install 2.4.1"
 	
 	# Install gem and redis client
 	config.vm.provision "shell", inline: "sudo yum install gem -y"

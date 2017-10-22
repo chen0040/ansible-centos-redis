@@ -22,6 +22,8 @@ git clone this project to your host computer and navigate to the root directory 
 vagrant up
 ```
 
+If vagrant up interrupted due to the vbox shared folder plugin issue (e.g. "/sbin/mount.vboxsf: mounting failed with the error: No such device"), just run "vagrant provision" after that.
+
 This will start a vagrant centos 7 VM (at ip 192.168.10.12) with ruby, gem, java, ansible, and redis client pre-installed. Run the following command to ssh into the centos VM:
 
 ```bash

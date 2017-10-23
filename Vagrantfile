@@ -20,16 +20,14 @@ Vagrant.configure("2") do |config|
 
     config.vm.provision "shell", inline: "sudo yum update -y"
     config.vm.provision "shell", inline: "sudo yum upgrade -y"
-	config.vm.provision "shell", inline: "sudo yum groupinstall \"Development tools\" -y"
 	
 	# Install java and ansible
-	config.vm.provision "shell", inline: "sudo yum install -y java-1.8.0-openjdk-devel"
 	config.vm.provision "shell", inline: "sudo yum install -y epel-release"
 	config.vm.provision "shell", inline: "sudo yum install -y ansible"
 	
-	# Install build tools for redis  
-	config.vm.provision "shell", inline: "sudo yum install gcc-c++ patch readline readline-devel zlib zlib-devel -y"
-	config.vm.provision "shell", inline: "sudo yum install libyaml-devel libffi-devel openssl-devel make -y"
-	config.vm.provision "shell", inline: "sudo yum install bzip2 autoconf automake libtool bison iconv-devel sqlite-devel dos2unix -y"
+	# Install build tools to build ruby
+	# config.vm.provision "shell", inline: "sudo yum install gcc-c++ patch readline readline-devel zlib zlib-devel -y"
+	# config.vm.provision "shell", inline: "sudo yum install libyaml-devel libffi-devel openssl-devel make -y"
+	# config.vm.provision "shell", inline: "sudo yum install bzip2 autoconf automake libtool bison iconv-devel sqlite-devel dos2unix -y"
 		
 end

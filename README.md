@@ -33,7 +33,7 @@ vagrant ssh
 On the centOS, cd to the devops/ansible folder (that is the "devops/ansible" folder in this project), and run the following command:
 
 ```bash
-ansible-playbook setup-redis.yml -u root -i inventory.password --tags=install_redis
+ansible-playbook setup-redis.yml -u root -i redis.inventory.password --tags=install_redis
 ```
 
 This will build and install a redis-6379.service on the CentOS. Run the following command to check this service after the installation:
@@ -64,5 +64,24 @@ The redis service can also be started by running the following commands:
 
 ```bash
 cd devops/ansible
-ansible-playbook setup-redis.yml -u root -i inventory.password --tags=start_redis
+ansible-playbook setup-redis.yml -u root -i redis.inventory.password --tags=start_redis
+```
+
+Other options available for the ansible-playbook are:
+
+* restart_redis
+* stop_redis
+* reload_redis
+* clean_redis
+
+# Install redis cluster
+
+To install and start redis cluster instead, run the following command:
+
+```bash
+ansible-playbook setup-redis.yml -u root -i redis.inventory.cluster --tags=install_redis
+```
+
+```bash
+ansible-playbook setup-redis.yml -u root -i redis.inventory.cluster --tags=start_redis
 ```

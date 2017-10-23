@@ -9,10 +9,10 @@ redis setup on centos using ansible
 git clone this project to your host computer and navigate to the root directory of the project then run the following command:
 
 ```bash
-./env_setup.sh
+devops/sbin/env_setup.sh
 ```
 
-This will install java, ansible, and make tools. 
+This will install ansible and make tools. 
 
 ## For Windows Users
 
@@ -22,7 +22,7 @@ git clone this project to your host computer and navigate to the root directory 
 vagrant up
 ```
 
-This will start a vagrant centos 7 VM (at ip 192.168.10.12) with java, ansible, and make tools. Run the following command to ssh into the centos VM:
+This will start a vagrant centos 7 VM (at ip 192.168.10.12) with ansible and make tools. Run the following command to ssh into the centos VM:
 
 ```bash
 vagrant ssh
